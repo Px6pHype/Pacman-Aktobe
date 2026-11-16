@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0F">
+<title>Pacman — игровой клуб в Актобе, Батыс 2</title>
+<meta name="description" content="Игровой клуб Pacman в Актобе: мощные ПК, PS5 и VIP-комнаты. Тарифы на 1, 3 и 5 часов, расписание и бронирование в WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0A0A0F;--surface:#14111C;--surface2:#0F0C16;--line:rgba(255,255,255,.1);--ink:#F5F1EA;--muted:#A9A3B8;--or:#FF7A1A;--pu:#8B3DFF;--pu-l:#B58CFF;--on-or:#1A0B00;--head:Unbounded,"Arial Black",system-ui,sans-serif;--sans:Manrope,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:calc(88px + env(safe-area-inset-top,0px));-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:400 1rem/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+a{-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--or);outline-offset:3px}
+.wrap{width:min(1160px,100% - 40px);margin-inline:auto}
+h1,h2,h3{font-family:var(--head);font-weight:700;line-height:1.15}
+
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:76px}
+.logo{display:flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none;font:700 1.25rem/1 var(--head);letter-spacing:.04em}
+.logo s{width:30px;height:30px;border-radius:50%;background:conic-gradient(from 60deg,var(--or) 0 300deg,transparent 300deg);transform:rotate(-30deg)}
+.links{display:flex;gap:34px}
+.links a{position:relative;padding:10px 0;color:var(--ink);text-decoration:none;font-weight:500;font-size:.95rem}
+.links a::after{content:"";position:absolute;left:0;right:0;bottom:4px;height:2px;background:var(--or);transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.links a:hover::after{transform:scaleX(1)}
+
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 30px;border-radius:14px;border:2px solid var(--or);background:var(--or);color:var(--on-or);font:700 .98rem var(--sans);text-decoration:none;cursor:pointer;transition:transform .3s,box-shadow .3s,background .3s,color .3s,border-color .3s;-webkit-tap-highlight-color:transparent}
+.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.4) 50%,transparent 70%);transform:translateX(-120%);transition:transform .7s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,122,26,.45)}
+.btn:hover::after{transform:translateX(120%)}
+.btn:active{transform:scale(.97)}
+.btn.pu{background:var(--pu);border-color:var(--pu);color:#fff}
+.btn.pu:hover{box-shadow:0 10px 30px rgba(139,61,255,.55)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--pu)}
+.btn.ghost:hover{background:var(--pu);color:#fff}
+.btn.sm{min-height:46px;padding:0 22px}
+.btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+
+.hero{padding:clamp(40px,7vw,96px) 0 clamp(48px,7vw,96px);background:radial-gradient(60% 70% at 85% 0,rgba(139,61,255,.28),transparent 70%),radial-gradient(50% 60% at 0 100%,rgba(255,122,26,.14),transparent 70%)}
+h1{font-size:clamp(1.8rem,6.4vw,3.9rem);max-width:15em}
+.lead{margin:24px 0 34px;max-width:34em;font-size:clamp(1rem,2.4vw,1.18rem);color:var(--muted)}
+.cta{display:flex;flex-wrap:wrap;gap:14px}
+
+.arcade{margin-top:clamp(40px,6vw,72px);padding:14px 0;background:var(--surface2);border:2px solid var(--pu);border-radius:999px;box-shadow:0 0 0 4px rgba(139,61,255,.15),0 0 44px rgba(139,61,255,.35);overflow:hidden}
+.track{position:relative;height:56px;margin:0 20px;background:radial-gradient(circle,var(--pu-l) 0 4px,transparent 5px) 0 50%/44px 56px repeat-x}
+.eat{position:absolute;inset:0 auto 0 0;width:28px;background:var(--surface2);animation:eat 7s linear infinite}
+.pac{position:absolute;top:0;left:0;width:56px;height:56px;animation:go 7s linear infinite}
+.pac i{position:absolute;left:0;width:56px;height:28px;background:var(--or);box-shadow:0 0 18px rgba(255,122,26,.6)}
+.pac i:first-child{top:0;border-radius:56px 56px 0 0;transform-origin:50% 100%;animation:mu .45s ease-in-out infinite alternate}
+.pac i:last-child{top:28px;border-radius:0 0 56px 56px;transform-origin:50% 0;animation:md .45s ease-in-out infinite alternate}
+.pac i:first-child::after{content:"";position:absolute;left:30px;top:9px;width:8px;height:8px;border-radius:50%;background:var(--bg)}
+@keyframes mu{to{transform:rotate(-32deg)}}
+@keyframes md{to{transform:rotate(32deg)}}
+@keyframes go{to{left:calc(100% - 56px)}}
+@keyframes eat{to{width:calc(100% - 28px)}}
+
+section{padding:clamp(56px,8vw,100px) 0}
+.head{max-width:660px;margin-bottom:36px}
+.head h2{font-size:clamp(1.55rem,4.6vw,2.6rem)}
+.head p{color:var(--muted);margin-top:14px}
+
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.plan{position:relative;display:flex;flex-direction:column;padding:30px 26px 14px;background:var(--surface);border:1px solid var(--line);border-radius:20px;transition:transform .4s,border-color .4s,box-shadow .4s}
+.plan:hover{transform:translateY(-8px);border-color:var(--or);box-shadow:0 20px 50px rgba(255,122,26,.2)}
+.plan.hot{border-color:var(--pu);background:linear-gradient(180deg,#221640,var(--surface) 65%)}
+.plan.hot:hover{border-color:var(--pu-l);box-shadow:0 20px 50px rgba(139,61,255,.35)}
+.plan h3{font-size:1.35rem}
+.tag{position:absolute;top:-13px;right:22px;padding:4px 14px;border-radius:999px;background:var(--pu);color:#fff;font-size:.8rem;font-weight:700}
+.spec{margin:10px 0 24px;color:var(--muted);font-size:.93rem}
+.rows{list-style:none;padding:0;margin-top:auto}
+.rows li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:15px 0;border-top:1px solid var(--line)}
+.rows span{color:var(--muted)}
+.rows b{font:700 1.2rem var(--head);color:var(--or);white-space:nowrap}
+.note{margin-top:22px;color:var(--muted);font-size:.93rem}
+
+#schedule{background:var(--surface2)}
+.sched{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}
+.box{padding:28px;background:var(--surface);border:1px solid var(--line);border-radius:20px}
+.box h3{font-size:1.2rem;margin-bottom:8px}
+.st{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;font-size:.92rem;font-weight:700;color:var(--muted)}
+.st::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--muted)}
+.st.on{color:var(--or)}
+.st.on::before{background:var(--or);box-shadow:0 0 12px var(--or)}
+.days,.evs{list-style:none;padding:0}
+.days li,.evs li{display:flex;justify-content:space-between;gap:14px;padding:13px 14px;margin:0 -14px;border-radius:10px;font-variant-numeric:tabular-nums}
+.days li.now{background:rgba(255,122,26,.14);color:var(--or);font-weight:700}
+.evs li{flex-direction:column;gap:2px;border-top:1px solid var(--line);border-radius:0}
+.evs li:first-child{border-top:0}
+.evs b{color:var(--pu-l)}
+
+#contacts{padding-bottom:40px;background:radial-gradient(60% 80% at 50% 0,rgba(139,61,255,.25),transparent 70%)}
+.cc{text-align:center;max-width:720px;margin-inline:auto}
+.cc h2{font-size:clamp(1.55rem,4.6vw,2.6rem)}
+.cc>p{margin:16px 0 30px;color:var(--muted)}
+.cc .cta{justify-content:center}
+.cc .btn{min-height:58px;min-width:230px}
+.wa{background:#25D366;border-color:#25D366;color:#08301A}
+.wa:hover{box-shadow:0 10px 30px rgba(37,211,102,.4)}
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px;padding-top:32px;border-top:1px solid var(--line);color:var(--muted);font-size:.95rem}
+.info b{display:block;margin-bottom:4px;color:var(--ink)}
+.info a{color:var(--or)}
+.copy{margin-top:36px;text-align:center;font-size:.85rem;color:var(--muted)}
+
+@media(max-width:860px){
+.plans,.sched,.info{grid-template-columns:1fr}
+.plans{gap:30px}
+}
+@media(max-width:720px){
+html{scroll-padding-top:calc(12px + env(safe-area-inset-top,0px))}
+header{position:static}
+.nav{flex-wrap:wrap;min-height:0;padding:12px 0 4px}
+.links{order:3;width:100%;gap:0}
+.links a{flex:1;text-align:center;padding:14px 0}
+.cta .btn,.cc .btn{width:100%}
+.box{padding:22px}
+.arcade{border-radius:40px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top"><s aria-hidden="true"></s>PACMAN</a>
+    <nav class="links" aria-label="Основное меню">
+      <a href="#tariffs">Тарифы</a>
+      <a href="#schedule">Расписание</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+    <a class="btn sm" href="#contacts" data-wa="Здравствуйте! Хочу забронировать место в Pacman.">Забронировать</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <h1>Игровой клуб в Актобе, где играют до утра</h1>
+      <p class="lead">Pacman на Батыс 2: мощные ПК, PS5 и VIP-комнаты для компании. Открыты до 2 ночи, а в пятницу и субботу — до 4.</p>
+      <div class="cta">
+        <a class="btn" href="#tariffs">Смотреть тарифы</a>
+        <a class="btn ghost" href="#schedule">Расписание клуба</a>
+      </div>
+      <div class="arcade" aria-hidden="true">
+        <div class="track"><div class="eat"></div><div class="pac"><i></i><i></i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tariffs">
+    <div class="wrap">
+      <div class="head">
+        <h2>Тарифы за 1, 3 и 5 часов</h2>
+        <p>Выберите зону под свою игру. Чем длиннее пакет, тем дешевле выходит каждый час.</p>
+      </div>
+      <div class="plans">
+        <article class="plan">
+          <h3>Стандарт</h3>
+          <p class="spec">Ryzen 5 и RTX 3060, монитор 144 Гц, игровая мышь и гарнитура.</p>
+          <ul class="rows">
+            <li><span>1 час</span><b>800&nbsp;₸</b></li>
+            <li><span>3 часа</span><b>2&nbsp;100&nbsp;₸</b></li>
+            <li><span>5 часов</span><b>3&nbsp;200&nbsp;₸</b></li>
+          </ul>
+        </article>
+        <article class="plan hot">
+          <span class="tag">Выбор игроков</span>
+          <h3>Pro</h3>
+          <p class="spec">Core i7 и RTX 4070, монитор 240 Гц, механическая клавиатура, кресло с поддержкой спины.</p>
+          <ul class="rows">
+            <li><span>1 час</span><b>1&nbsp;100&nbsp;₸</b></li>
+            <li><span>3 часа</span><b>2&nbsp;900&nbsp;₸</b></li>
+            <li><span>5 часов</span><b>4&nbsp;500&nbsp;₸</b></li>
+          </ul>
+        </article>
+        <article class="plan">
+          <h3>VIP-комната</h3>
+          <p class="spec">Отдельная комната до 6 человек: ПК, PS5, диваны и свой свет. Цена за всю комнату.</p>
+          <ul class="rows">
+            <li><span>1 час</span><b>3&nbsp;500&nbsp;₸</b></li>
+            <li><span>3 часа</span><b>9&nbsp;000&nbsp;₸</b></li>
+            <li><span>5 часов</span><b>14&nbsp;000&nbsp;₸</b></li>
+          </ul>
+        </article>
+      </div>
+      <p class="note">Ночью с 00:00 действуют те же цены. Бронь места или комнаты — в WhatsApp или Instagram.</p>
+    </div>
+  </section>
+
+  <section id="schedule">
+    <div class="wrap">
+      <div class="head">
+        <h2>Расписание Pacman в Актобе</h2>
+        <p>Клуб на Батыс 2 работает каждый день. Время указано по Актобе.</p>
+      </div>
+      <div class="sched">
+        <div class="box">
+          <h3>Часы работы</h3>
+          <div class="st" id="st"></div>
+          <ul class="days">
+            <li data-d="1"><span>Понедельник</span><span>12:00–02:00</span></li>
+            <li data-d="2"><span>Вторник</span><span>12:00–02:00</span></li>
+            <li data-d="3"><span>Среда</span><span>12:00–02:00</span></li>
+            <li data-d="4"><span>Четверг</span><span>12:00–02:00</span></li>
+            <li data-d="5"><span>Пятница</span><span>12:00–04:00</span></li>
+            <li data-d="6"><span>Суббота</span><span>12:00–04:00</span></li>
+            <li data-d="0"><span>Воскресенье</span><span>12:00–02:00</span></li>
+          </ul>
+        </div>
+        <div class="box">
+          <h3>Турниры недели</h3>
+          <ul class="evs">
+            <li><b>Среда, 19:00</b>Турнир по CS2, команды 5×5</li>
+            <li><b>Пятница, 21:00</b>Ночная Dota 2</li>
+            <li><b>Суббота, 18:00</b>FIFA на PS5</li>
+            <li><b>Воскресенье, 16:00</b>Игры на PS5 для всей семьи</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacts">
+    <div class="wrap">
+      <div class="cc">
+        <h2>Свяжитесь с нами</h2>
+        <p>Напишите в WhatsApp или Instagram: забронируем место, комнату или запишем вашу команду на турнир.</p>
+        <div class="cta">
+          <a class="btn wa" href="#contacts" data-wa="Здравствуйте! Пишу с сайта Pacman.">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.800 13.500L3 21l4.600-1.200A9 9 0 1 0 12 3z"/></svg>
+            Написать в WhatsApp
+          </a>
+          <a class="btn pu" href="https://instagram.com/pacman.aktobe" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.500 6.500h.01"/></svg>
+            Открыть Instagram
+          </a>
+        </div>
+      </div>
+      <div class="info">
+        <div><b>Адрес</b>Актобе, мкр Батыс 2, пр. Тәуелсіздік. <a href="https://www.google.com/maps/search/?api=1&query=Pacman+Актобе+Батыс+2+проспект+Тәуелсіздік" target="_blank" rel="noopener">Открыть на карте</a></div>
+        <div><b>Часы работы</b>Пн–Чт и Вс: 12:00–02:00<br>Пт и Сб: 12:00–04:00</div>
+        <div><b>Телефон</b><a href="tel:+77000000000">+7 700 000-00-00</a></div>
+      </div>
+      <p class="copy">© 2026 Pacman. Сеть игровых клубов. Актобе.</p>
+    </div>
+  </div>
+  </section>
+</main>
+
+<script>
+var WA='77000000000';
+document.querySelectorAll('[data-wa]').forEach(function(a){
+  a.href='https://wa.me/'+WA+'?text='+encodeURIComponent(a.dataset.wa);
+  a.target='_blank';a.rel='noopener';
+});
+try{
+  var o={};
+  new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Aqtobe',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){o[x.type]=x.value});
+  var d=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(o.weekday),n=+o.hour*60+ +o.minute,C=[120,120,120,120,120,240,240],pd=(d+6)%7;
+  var op=n>=720||n<C[pd],row=n>=720?d:pd,st=document.getElementById('st');
+  if(d>=0){
+    st.textContent=op?'Сейчас открыто до 0'+C[row]/60+':00':'Сейчас закрыто, откроемся в 12:00';
+    st.className='st '+(op?'on':'off');
+    var r=document.querySelector('.days li[data-d="'+(op?row:d)+'"]');
+    if(r)r.classList.add('now');
+  }
+}catch(e){}
+</script>
+</body>
+</html>
